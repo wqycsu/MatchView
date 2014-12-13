@@ -264,6 +264,14 @@ public class MatchView extends View {
         return getPaddingBottom() + Utils.dp2px(10);
     }
 
+    private int getLeftPadding(){
+        return Utils.dp2px(10);
+    }
+
+    private int getRightPadding(){
+        return Utils.dp2px(10);
+    }
+
     public void initWithString(String str) {
         initWithString(str, mTextSize);
     }
@@ -312,12 +320,29 @@ public class MatchView extends View {
             drawHeight = Math.max(drawHeight, startPoint.y);
             drawHeight = Math.max(drawHeight, endPoint.y);
 
+        }
+        mDrawZoneWidth = (int) Math.ceil(drawWidth);
+        mDrawZoneHeight = (int) Math.ceil(drawHeight);
+        //如果绘画区域超出了屏幕，应该通过mScale设置缩放
+        if(mDrawZoneWidth>Utils.SCREEN_WIDTH_PIXELS-30){
+            int width = Utils.SCREEN_WIDTH_PIXELS-30-getRightPadding()-getLeftPadding();
+            mScale = (float)width/mDrawZoneWidth;
+            mDrawZoneWidth = width;
+        }
+        for (int i = 0; i < pointList.size(); i++) {
+            float[] line = pointList.get(i);
+            PointF startPoint = new PointF(Utils.dp2px(line[0]) * mScale, Utils.dp2px(line[1]) * mScale);
+            PointF endPoint = new PointF(Utils.dp2px(line[2]) * mScale, Utils.dp2px(line[3]) * mScale);
+
+            drawWidth = Math.max(drawWidth, startPoint.x);
+            drawWidth = Math.max(drawWidth, endPoint.x);
+
+            drawHeight = Math.max(drawHeight, startPoint.y);
+            drawHeight = Math.max(drawHeight, endPoint.y);
             MatchItem item = new MatchItem(i, startPoint, endPoint, mTextColor, mLineWidth);
             item.resetPosition(horizontalRandomness);
             mItemList.add(item);
         }
-        mDrawZoneWidth = (int) Math.ceil(drawWidth);
-        mDrawZoneHeight = (int) Math.ceil(drawHeight);
         if (shouldLayout) {
             requestLayout();
         }
