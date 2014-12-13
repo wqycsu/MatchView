@@ -322,10 +322,10 @@ public class MatchPath {
                 24, 60, 24, 72
         });
 
-        //右竖线
+        //左竖线
         addChar(V_LEFT, new float[]{
-                -12, 120, -12, 38,
-                -12, 38, -12, -45
+                -8, 120, -8, 38,
+                -8, 38, -8, -45
         });
         //上下横线
         addChar(H_TOP_BOTTOM, new float[]{
@@ -335,10 +335,10 @@ public class MatchPath {
                 23, 120, 67, 120
         });
 
-        //左竖线
+        //右竖线
         addChar(V_RIGHT, new float[]{
-                79, -45, 79, 38,
-                79, 38, 79, 120
+                73, -45, 73, 38,
+                73, 38, 73, 120
         });
     }
 
@@ -387,7 +387,16 @@ public class MatchPath {
                     float l = points[j * 4 + k];
                     // x
                     if (k % 2 == 0) {
-                        line[k] = (l + offsetForWidth) * scale;
+                        if(isButtonModle) {
+                            if (j < 4)//前4个是上下横线不要设置额外偏移
+                                line[k] = (l + offsetForWidth) * scale;
+                            else if(i<str.length()-1&&i>0)//button的左右竖线不需要额外偏移
+                                line[k] = (l + offsetForWidth + 10) * scale;//10是上下横线减去字符宽度的一半
+                            else
+                                line[k] = (l + offsetForWidth) * scale;
+                        }else{
+                            line[k] = (l + offsetForWidth) * scale;
+                        }
                     }
                     // y
                     else {
